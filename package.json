@@ -1,0 +1,25 @@
+{
+  "name": "dev-meet",
+  "version": "1.0.0",
+  "description": "This is a website for developers to meet other developers",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "keywords": [
+    "node.js",
+    "react.js",
+    "mongodb",
+    "express",
+    "tailwind",
+    "mern",
+    "frontend",
+    "backend"
+  ],
+  "author": "Akash Patil",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
