@@ -60,6 +60,34 @@ app.get("/getUserById", async (req, res) => {
   }
 });
 
+//To get user by id and then delete it
+app.delete("/users", async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    // await User.findOneAndDelete({ _id: id });
+    const user = await User.findByIdAndDelete(id);
+    console.log(user);
+
+    res.send("User deleted successfully");
+  } catch (error) {
+    res.status(400).send("Something went wrong!");
+  }
+});
+
+//To get an user by id and update it
+app.patch("/users", async (req, res) => {
+  const { id, update } = req.body;
+
+  try {
+    await User.findByIdAndUpdate(id, update);
+
+    res.send("User updated successfully");
+  } catch (error) {
+    res.status(400).send("Something went wrong!");
+  }
+});
+
 connectDB()
   .then(() => {
     console.log("connection successfully established");
