@@ -97,7 +97,6 @@ app.patch("/users/:userId", async (req, res) => {
     const isUpdateAllowed = Object.keys(data).every((k) =>
       VALIDATION_FIELDS.includes(k)
     );
-    console.log(isUpdateAllowed);
     if (!isUpdateAllowed) {
       throw new Error("Update is not allowed");
     }
