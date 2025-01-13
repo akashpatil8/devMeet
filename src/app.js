@@ -11,10 +11,14 @@ app.post("/signup", async (req, res) => {
   const user = new User(userData);
 
   try {
+    if (userData.skills?.length > 10) {
+      throw new Error("Skills cannot be more than 10");
+    }
+
     await user.save();
     res.send("User added successfully!");
   } catch (err) {
-    res.status(400).send("Error while saving the user:" + err.message);
+    res.status(400).send("Error while creating the user: " + err.message);
   }
 });
 
@@ -76,15 +80,37 @@ app.delete("/users", async (req, res) => {
 });
 
 //To get an user by id and update it
-app.patch("/users", async (req, res) => {
-  const { id, update } = req.body;
+app.patch("/users/:userId", async (req, res) => {
+  const { userId } = req.params;
+  const data = req.body;
+
+  const VALIDATION_FIELDS = [
+    "firstName",
+    "lastName",
+    "age",
+    "imageUrl",
+    "skills",
+    "gender",
+  ];
 
   try {
-    await User.findByIdAndUpdate(id, update);
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      VALIDATION_FIELDS.includes(k)
+    );
+    console.log(isUpdateAllowed);
+    if (!isUpdateAllowed) {
+      throw new Error("Update is not allowed");
+    }
+
+    if (data.skills?.length > 10) {
+      throw new Error("Skills cannot be more than 10.");
+    }
+
+    await User.findByIdAndUpdate(userId, data);
 
     res.send("User updated successfully");
   } catch (error) {
-    res.status(400).send("Something went wrong!");
+    res.status(400).send("Update Error: " + error.message);
   }
 });
 
