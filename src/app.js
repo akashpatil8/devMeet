@@ -1,5 +1,6 @@
 const express = require("express");
 const connectDB = require("./config/database");
+const bcrypt = require("bcrypt");
 const app = express();
 const User = require("./models/user");
 
@@ -7,13 +8,21 @@ app.use(express.json());
 
 app.post("/signup", async (req, res) => {
   //created a new instance of the user model
-  const userData = req.body;
-  const user = new User(userData);
+  const { firstName, lastName, email, password, skills } = req.body;
+
+  const passwordHash = await bcrypt.hash(password, 10);
 
   try {
-    if (userData.skills?.length > 10) {
+    if (skills?.length > 10) {
       throw new Error("Skills cannot be more than 10");
     }
+
+    const user = new User({
+      firstName,
+      lastName,
+      email,
+      password: passwordHash,
+    });
 
     await user.save();
     res.send("User added successfully!");
