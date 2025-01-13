@@ -31,6 +31,27 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+//To login users
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email: email });
+
+    if (!user) throw new Error("Invalid credentials!");
+
+    const isPasswordSame = await bcrypt.compare(password, user?.password);
+
+    if (!isPasswordSame) {
+      throw new Error("Invalid credentials!");
+    } else {
+      res.send("Login successful!!!...");
+    }
+  } catch (error) {
+    res.status(400).send("Error: " + error.message);
+  }
+});
+
 //Get all the users from the database
 app.get("/feed", async (req, res) => {
   try {
