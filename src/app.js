@@ -3,8 +3,12 @@ const connectDB = require("./config/database");
 const bcrypt = require("bcrypt");
 const app = express();
 const User = require("./models/user");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const { userAuth } = require("./middleware/auth");
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
   //created a new instance of the user model
@@ -42,18 +46,36 @@ app.post("/login", async (req, res) => {
 
     const isPasswordSame = await bcrypt.compare(password, user?.password);
 
-    if (!isPasswordSame) {
-      throw new Error("Invalid credentials!");
-    } else {
+    if (isPasswordSame) {
+      //Create JWT token
+      const token = await jwt.sign({ _id: user.id }, "Akash@10598", {
+        expiresIn: "2d",
+      });
+
+      //Create a cookie for that token
+      res.cookie("token", token);
       res.send("Login successful!!!...");
+    } else {
+      throw new Error("Invalid credentials!");
     }
   } catch (error) {
     res.status(400).send("Error: " + error.message);
   }
 });
 
+//Get the profile of the user
+app.get("/profile", userAuth, async (req, res) => {
+  const { user } = req.body;
+
+  try {
+    res.send(user);
+  } catch (error) {
+    res.status(400).send("Error: " + error.message);
+  }
+});
+
 //Get all the users from the database
-app.get("/feed", async (req, res) => {
+app.get("/feed", userAuth, async (req, res) => {
   try {
     const userList = await User.find({});
     if (userList.length === 0) {
