@@ -4,7 +4,6 @@ const bcrypt = require("bcrypt");
 const app = express();
 const User = require("./models/user");
 const cookieParser = require("cookie-parser");
-const jwt = require("jsonwebtoken");
 const { userAuth } = require("./middleware/auth");
 
 app.use(express.json());
@@ -44,13 +43,11 @@ app.post("/login", async (req, res) => {
 
     if (!user) throw new Error("Invalid credentials!");
 
-    const isPasswordSame = await bcrypt.compare(password, user?.password);
+    const isPasswordSame = await user.verifyPassword(password);
 
     if (isPasswordSame) {
       //Create JWT token
-      const token = await jwt.sign({ _id: user.id }, "Akash@10598", {
-        expiresIn: "2d",
-      });
+      const token = await user.getJWT();
 
       //Create a cookie for that token
       res.cookie("token", token);
