@@ -20,6 +20,7 @@ authRouter.post("/signup", async (req, res) => {
       lastName,
       email,
       password: passwordHash,
+      skills,
     });
 
     await user.save();
