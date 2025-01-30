@@ -2,36 +2,22 @@ const express = require("express");
 const connectDB = require("./config/database");
 const app = express();
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 require("dotenv").config();
 
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
-const { userRouter } = require("./routes/user");
+const userRouter = require("./routes/user");
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
-
-//Get the profile of the user
-
-//Get all the users from the database
-// app.get("/feed", userAuth, async (req, res) => {
-//   try {
-//     const userList = await User.find({});
-//     if (userList.length === 0) {
-//       res.status(404).send("Users not found!");
-//     } else {
-//       res.send(userList);
-//     }
-//   } catch (error) {
-//     res.status(400).send("Something went wrong");
-//   }
-// });
 
 connectDB()
   .then(() => {
