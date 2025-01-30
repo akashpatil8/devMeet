@@ -4,9 +4,9 @@ const User = require("../models/user");
 const userAuth = async (req, res, next) => {
   try {
     const { token } = req.cookies;
-    if (!token) throw new Error("Token is not valid!");
+    if (!token) return res.status(401).json({ message: "Please login!" });
 
-    const decodedTokenData = await jwt.verify(token, "Akash@10598");
+    const decodedTokenData = jwt.verify(token, "Akash@10598");
 
     const user = await User.findById(decodedTokenData._id);
     if (user) {
@@ -14,7 +14,7 @@ const userAuth = async (req, res, next) => {
       req.body.user = user;
       next();
     } else {
-      throw new Error("User does not exists");
+      return res.status(404).json({ message: "User does not exists" });
     }
   } catch (error) {
     res.status(400).send("Error: " + error.message);
