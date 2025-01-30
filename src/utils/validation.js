@@ -16,4 +16,5 @@ const validateProfileEditFields = (req) => {
 
   return isEditAllowed;
 };
+
 module.exports = { validateProfileEditFields };

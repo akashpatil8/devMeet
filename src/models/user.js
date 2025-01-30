@@ -13,7 +13,13 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
-    lastName: { type: String, minLength: 3, maxLength: 50, trim: true },
+    lastName: {
+      type: String,
+      minLength: 3,
+      maxLength: 50,
+      trim: true,
+      required: true,
+    },
 
     email: {
       type: String,
@@ -51,6 +57,7 @@ const userSchema = new mongoose.Schema(
     about: {
       type: String,
       minLength: 20,
+      default: "This is the default description",
     },
 
     imageUrl: {
@@ -69,8 +76,8 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.methods.getJWT = async function () {
-  const token = await jwt.sign({ _id: this.id }, "Akash@10598", {
+userSchema.methods.getJWT = function () {
+  const token = jwt.sign({ _id: this.id }, "Akash@10598", {
     expiresIn: "2d",
   });
   return token;
