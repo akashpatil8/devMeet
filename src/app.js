@@ -22,7 +22,7 @@ app.use("/", userRouter);
 connectDB()
   .then(() => {
     console.log("connection successfully established");
-    app.listen(3000, () => {
+    app.listen(process.env.PORT, () => {
       console.log("Listening to port 3000");
     });
   })

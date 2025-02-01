@@ -21,9 +21,9 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     Object.keys(req.body).forEach((key) => (loggedInUser[key] = req.body[key]));
     await loggedInUser.save();
 
-    res.send(loggedInUser);
+    res.json({ user: loggedInUser });
   } catch (error) {
-    res.status(400).send("Error: " + error.message);
+    res.status(400).json("Error: " + error.message);
   }
 });
 
@@ -37,9 +37,9 @@ profileRouter.patch("/profile/password", userAuth, async (req, res) => {
     loggedInUser.password = passwordHash;
     await loggedInUser.save();
 
-    res.send("Password changed successfully");
+    res.json({ message: "Password changed successfully" });
   } catch (error) {
-    res.status(400).send("Error: " + error.message);
+    res.status(400).json("Error: " + error.message);
   }
 });
 
